@@ -65,7 +65,8 @@ export class SpicyAPI {
   constructor(key, fetchImpl = globalThis.fetch) {
     if (!API_KEY.test(key || '')) throw new Error('Set the dedicated SYNTHKISS_SPICY_API_KEY secret.');
     this.#key = key;
-    this.#fetch = fetchImpl;
+    // Workers' native fetch requires the global receiver, unlike Node's fetch.
+    this.#fetch = fetchImpl.bind(globalThis);
   }
 
   keyFingerprint() {

@@ -7,7 +7,10 @@ const checks = new Map();
 function reply(data, status = 200) {
   return Response.json(data, {
     status,
-    headers: {'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow'},
+    headers: {
+      'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow',
+      'X-Synthkiss-Connection-Version': '3',
+    },
   });
 }
 

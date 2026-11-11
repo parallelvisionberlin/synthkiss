@@ -154,6 +154,15 @@ test('catalog diagnostics distinguish timeout, network and a non-JSON response',
   await assert.rejects(unavailable.pilotAvailability(PILOTS), /non-JSON.*HTTP 503/);
 });
 
+test('transport preserves the global fetch receiver required by Workers', async () => {
+  const client = new SpicyAPI(key, async function (url) {
+    assert.equal(this, globalThis);
+    assert.equal(url, 'https://api.spicyapi.ai/api/v1/models');
+    return envelope({items: []});
+  });
+  assert.equal((await client.pilotAvailability(PILOTS)).length, 9);
+});
+
 test('manual redirects stop before forwarding credentials or repeating a submission', async () => {
   const calls = [];
   const client = new SpicyAPI(key, async (url, options) => {
