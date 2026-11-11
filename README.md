@@ -3,11 +3,27 @@
 Independent template-first AI marketplace prototype.
 
 ## Published prototype
-- Static frontend in `index.html` (zero-build, no third-party dependencies).
+- Published production source remains the old static prototype; the new workspace implementation is described below.
 - 12 creative template concepts, searchable/filterable catalog, template preview dialog.
 - Optional JPEG/PNG/WebP preview occurs in the browser only, maximum 10 MB.
 - Visuals are abstract CSS placeholders, **not** examples of generated results.
 - The public frontend has no generation, user accounts, payment processing, user analytics, or server uploads. The separate Preview check below verifies provider access only.
+
+## Approved minimal workspace: implementation checkpoint
+
+- Implemented on local branch `synthkiss-minimal-workspace`, based on the verified provider-check tree.
+- Approved reference: the warm ivory Home mockup with a left menu and kiss wordmark.
+- `index.html`: Home, Image, Image to Video, Video to Video, Extend Video; hash navigation and selected state.
+- Home intentionally has an empty `#templates` area beneath the Synthkiss wordmark and kiss symbol.
+- `assets/kiss.svg`: local scalable kiss mark, also used as favicon; no external asset/font dependencies.
+- Compact screens use a collapsible menu with Escape/outside dismissal and inactive hidden links removed from keyboard navigation.
+- Secondary views truthfully indicate that generation is not yet available; this change adds no generation calls.
+- The original 12-template demo is preserved at `prototype.html`; its hidden-photo preview CSS issue is corrected there.
+- Browser verification passed on desktop and at a 454 CSS px narrow viewport: navigation, menu opening, section selection and automatic menu closure; no horizontal overflow observed.
+- Internal review URL: `http://127.0.0.1:4173/` via the managed preview. This is not a production deployment.
+- Publication to production still requires explicit owner approval. No production, DNS or PV LAB changes were made.
+- Save this branch with `[CF-Pages-Skip]` so source review does not trigger a Cloudflare deployment.
+- Next action: owner reviews the implemented Home, then explicitly approves production publication if desired.
 
 ## Local SpicyAPI pilot
 
@@ -57,8 +73,8 @@ Verified on 2026-11-10. All nine pilot routes and their input fields matched the
 - Desktop browser: filters returned three Cinematic looks, search narrowed to Lost Tape, and the template dialog opened.
 - Responsive browser check: at 454 CSS px the grid used two columns without horizontal overflow; the stacked dialog remained scrollable.
 - Physical mobile/touch behavior and photo selection were not verified in this pass.
-- Known frontend issue: `.preview { display:block }` overrides the image's `hidden` attribute, displaying a broken empty preview before a photo is chosen. Correct during the next frontend change.
-- The frontend is still the original 12-template CSS demo; its generation button remains disabled.
+- The original hidden preview CSS issue is corrected in the preserved `prototype.html` on the workspace implementation branch.
+- The deployed frontend is still the original demo; the new workspace exists only on its review branch until approved.
 - No production, domain, DNS, PV LAB credentials, resources or customer data were modified.
 - Next: implement the template generation flow in a separate Preview, with private server credentials, access controls, cost confirmation and job recovery before exposing paid generation.
 - Publishing or modifying production/domain/DNS requires the owner's explicit approval; a paid job requires an approved quote and spending ceiling.

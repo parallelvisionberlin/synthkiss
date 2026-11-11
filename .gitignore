@@ -1,2 +1,5 @@
 /.env.synthkiss.local
 /.synthkiss-pilot/
+
+/dist/
+/.openai/
