@@ -44,6 +44,7 @@ test('catalog, upload, quote, confirmed submit and result stay separate', async 
   const steps = [];
   const sha256 = await sha256Hex(photo);
   const client = new SpicyAPI(key, async (url, options) => {
+    assert.equal(options.redirect, 'manual');
     const {hostname, pathname, searchParams} = new URL(url);
     steps.push(pathname);
     if (hostname === 'uploads.spicyapi.ai') {
@@ -151,4 +152,17 @@ test('catalog diagnostics distinguish timeout, network and a non-JSON response',
   await assert.rejects(network.pilotAvailability(PILOTS), /network layer/);
   const unavailable = new SpicyAPI(key, async () => new Response('fixture', {status: 503}));
   await assert.rejects(unavailable.pilotAvailability(PILOTS), /non-JSON.*HTTP 503/);
+});
+
+test('manual redirects stop before forwarding credentials or repeating a submission', async () => {
+  const calls = [];
+  const client = new SpicyAPI(key, async (url, options) => {
+    assert.equal(options.redirect, 'manual');
+    calls.push(url);
+    return new Response(null, {status: 307, headers: {Location: 'https://other.example/'}});
+  });
+  await assert.rejects(client.pilotAvailability(PILOTS), /redirect.*HTTP 307/);
+  await assert.rejects(client.submit(await plan(client), '0.01'), /unconfirmed/);
+  assert.equal(calls.length, 2);
+  assert.equal(calls.every(url => url.startsWith('https://api.spicyapi.ai/api/v1/')), true);
 });

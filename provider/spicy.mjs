@@ -82,13 +82,18 @@ export class SpicyAPI {
     try {
       response = await this.#fetch(API + path, {
         method, headers, body: body === undefined ? undefined : JSON.stringify(body),
-        redirect: 'error', signal: AbortSignal.timeout(20_000),
+        redirect: 'manual', signal: AbortSignal.timeout(20_000),
       });
     } catch (error) {
       if (paid) throw new Error('Submission is unconfirmed. Check SpicyAPI Logs before starting another job.');
       const timedOut = ['TimeoutError', 'AbortError'].includes(error?.name);
       const reason = timedOut ? 'timed out' : 'failed at the network layer';
       throw new Error('SpicyAPI request ' + reason + ' for ' + path.split('?')[0] + '.');
+    }
+    if (response.status >= 300 && response.status < 400) {
+      await response.body?.cancel();
+      if (paid) throw new Error('Submission is unconfirmed. Check SpicyAPI Logs before starting another job.');
+      throw new Error('SpicyAPI returned a redirect (HTTP ' + response.status + ').');
     }
     try {
       payload = await response.json();
@@ -147,7 +152,7 @@ export class SpicyAPI {
       throw new Error('SpicyAPI upload headers do not match the photo.');
     }
     const response = await this.#fetch(target, {
-      method: 'PUT', headers, body: bytes, redirect: 'error', signal: AbortSignal.timeout(30_000),
+      method: 'PUT', headers, body: bytes, redirect: 'manual', signal: AbortSignal.timeout(30_000),
     });
     await response.body?.cancel();
     if (!response.ok) throw new Error(`SpicyAPI could not receive the photo (HTTP ${response.status}).`);

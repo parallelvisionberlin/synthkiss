@@ -24,6 +24,7 @@ test('check reads the catalog once and returns only requested model availability
   const fetchMock = t.mock.method(globalThis, 'fetch', async (url, options) => {
     assert.equal(url, 'https://api.spicyapi.ai/api/v1/models');
     assert.equal(options.method, 'GET');
+    assert.equal(options.redirect, 'manual');
     assert.equal(options.body, undefined);
     assert.equal(options.headers.get('Authorization'), 'Bearer ' + key('b'));
     return Response.json({code: 200, data: {items: [
