@@ -143,3 +143,12 @@ test('uncertain submission never automatically resubmits', async () => {
   await assert.rejects(client.submit(savedPlan, '0.01'), /unconfirmed.*Logs/);
   assert.deepEqual(calls, [savedPlan.id]);
 });
+
+test('catalog diagnostics distinguish timeout, network and a non-JSON response', async () => {
+  const timeout = new SpicyAPI(key, async () => { throw new DOMException('fixture', 'TimeoutError'); });
+  await assert.rejects(timeout.pilotAvailability(PILOTS), /request timed out for \/models/);
+  const network = new SpicyAPI(key, async () => { throw new Error('fixture'); });
+  await assert.rejects(network.pilotAvailability(PILOTS), /network layer/);
+  const unavailable = new SpicyAPI(key, async () => new Response('fixture', {status: 503}));
+  await assert.rejects(unavailable.pilotAvailability(PILOTS), /non-JSON.*HTTP 503/);
+});

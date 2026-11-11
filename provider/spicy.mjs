@@ -84,11 +84,18 @@ export class SpicyAPI {
         method, headers, body: body === undefined ? undefined : JSON.stringify(body),
         redirect: 'error', signal: AbortSignal.timeout(20_000),
       });
+    } catch (error) {
+      if (paid) throw new Error('Submission is unconfirmed. Check SpicyAPI Logs before starting another job.');
+      const timedOut = ['TimeoutError', 'AbortError'].includes(error?.name);
+      const reason = timedOut ? 'timed out' : 'failed at the network layer';
+      throw new Error('SpicyAPI request ' + reason + ' for ' + path.split('?')[0] + '.');
+    }
+    try {
       payload = await response.json();
     } catch {
       if (paid) throw new Error('Submission is unconfirmed. Check SpicyAPI Logs before starting another job.');
       if (response?.status === 403) throw new Error('SpicyAPI refused this request before returning an API response (HTTP 403).');
-      throw new Error('SpicyAPI did not return a readable response for ' + path.split('?')[0] + '.');
+      throw new Error('SpicyAPI returned a non-JSON response (HTTP ' + response.status + ') for ' + path.split('?')[0] + '.');
     }
     const code = Number(payload?.code);
     if (response.ok && code === 200 && payload.data != null) return payload.data;
