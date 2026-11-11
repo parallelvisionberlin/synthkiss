@@ -15,7 +15,11 @@ Independent template-first AI marketplace prototype.
 - No accounts, payments, analytics or server uploads are enabled.
 - Separate provider-check Preview has verified catalog access for nine SpicyAPI routes. This does not enable generation on production.
 - Provider code and Preview secrets remain outside this production release.
-- Deployment: approval received; publication and live verification in progress.
+- Verified live commit: `d2195f69aece450bd3e3d68827a31f2ea7093f68` on 2026-11-11.
+- Cloudflare deployment `a9724d54-0e67-42b5-9faf-ccc6e7af09a7` succeeded.
+- Live browser at https://synthkiss.com verified Home and all four generation-section links.
+- Screenshot evidence: `/workspace/shared/synthkiss-live-workspace.png`.
+- Current live layout is verified; generation is still unfinished.
 - PV LAB credentials, resources and customer data are not used.
 - Next: populate approved templates and build the real generation flow in a separate Preview.
 - Before further production/domain/DNS changes obtain explicit owner approval. Paid jobs require an approved quote and spending ceiling.
